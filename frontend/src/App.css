@@ -1,0 +1,93 @@
+/* Resetando estilos padrão */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Estilo do quadrado centralizado */
+.Quadrado {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.Quadrado h1 {
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.Quadrado p {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* Estilo dos botões */
+.Quadrado button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+}
+
+.Quadrado button:nth-child(3) {
+  color: #28a745; /* Verde para "Agendar Serviço" */
+}
+
+.Quadrado button:nth-child(4) {
+  color: #007bff; /* Azul para "Consultar Agendamento" */
+}
+
+.Quadrado button:nth-child(5) {
+  color: #dc3545; /* Vermelho para "Cancelar Agendamento" */
+}
+
+.Quadrado button:hover {
+  background-color: #e9ecef;
+}
+.header {
+  width: 100%;
+  background-color: #1c3d5a; /* Cor de fundo azul-escuro */
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 30px;
+  margin-right: 10px;
+}
+
+.logo span {
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+}
