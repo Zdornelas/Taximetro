@@ -123,11 +123,6 @@ body {
 h1, h2 {
   text-align: center;
 }
-
-.form-step {
-  margin-bottom: 20px;
-}
-
 select, input[type="text"], input[type="date"], input[type="time"] {
   width: 100%;
   padding: 10px;
@@ -224,7 +219,11 @@ input::placeholder {
   gap: 20px;
   margin-bottom: 20px;
 }
-
+#confirmarbuttom{
+  width: 441px;
+  position: relative;
+  left: -5px;
+}
 .form-row .input-container {
   flex: 1;}
   
@@ -253,8 +252,28 @@ input::placeholder {
   .agendamento-container {
     padding: 20px;
   }
-  
-  .footer-buttons button {
-    margin-top: 10px;
+  .form-step {
+    margin-bottom: 0px;
   }
-  
+  .footer-buttons button {
+    margin-top: 0px;
+  }
+  /* Adicionar esse estilo no seu arquivo CSS global */
+div {
+  font-family: 'Arial', sans-serif;
+  padding: 7.5px;
+}
+
+button {
+  margin-top: 20px;
+}
+
+h2 {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+input, select {
+  margin-bottom: 15px;
+  width: 100%;
+}
