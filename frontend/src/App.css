@@ -24,6 +24,7 @@ body {
   text-align: center;
   max-width: 400px;
   width: 100%;
+  margin-top: 70px;
 }
 
 .Quadrado h1 {
@@ -146,35 +147,46 @@ button:hover {
   background-color: #002244;
 }
 /* Estilos para inputs com labels flutuantes */
+/* Contêiner do campo */
 .input-container {
-  position: relative;
-  margin-bottom: 15px;
+  position: center;
+  margin-bottom: 20px;
 }
 
+/* Estilo do campo de entrada */
 .input-container input {
   width: 100%;
   padding: 10px;
   font-size: 16px;
-  box-sizing: border-box;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  background: transparent;
 }
 
+.input-container input:focus {
+  outline: none;
+  border-bottom: 2px solid #007BFF; /* Azul para foco */
+}
+
+/* Estilo do rótulo */
 .input-container label {
   position: absolute;
   top: 10px;
   left: 10px;
-  color: #999;
   font-size: 16px;
-  transition: all 0.2s ease;
+  color: #999;
   pointer-events: none;
+  transition: 0.2s ease all;
 }
 
+/* Estilo ao focar no input ou preencher o campo */
 .input-container input:focus + label,
 .input-container input:not(:placeholder-shown) + label {
-  top: -10px;
-  left: 10px;
+  top: -15px;
   font-size: 12px;
-  color: #333;
+  color: #007BFF;
 }
+
 .input-container {
   margin-bottom: 20px;
   position: relative;
@@ -191,7 +203,7 @@ button:hover {
 
 .input-container input:focus {
   outline: none;
-  border-bottom: 2px solid #007BFF; /* Cor para foco */
+  border-bottom: 2px solid #007BFF; /* Cor ao focar no campo */
 }
 
 .input-container label {
@@ -214,6 +226,15 @@ button:hover {
 input::placeholder {
   color: transparent;
 }
+.form-container {
+  background: white; /* Fundo branco */
+  border-radius: 8px; /* Cantos arredondados */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
+  padding: 50px; /* Espaçamento interno */
+  max-width: 400px; /* Largura máxima */
+  margin: 0;
+}
+
 .form-row {
   display: flex;
   gap: 20px;
@@ -232,18 +253,27 @@ input::placeholder {
     margin-bottom: 10px;
   }
 
-  .notification {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
-    z-index: 999;
-    transition: opacity 0.3s ease;
-  }
+.notification {
+  position: fixed;
+  top: 20px; 
+  left: 50%;
+  transform: translateX(-50%); 
+  background-color: #4CAF50; 
+  color: white;
+  padding: 15px 30px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  z-index: 9999; 
+  opacity: 1;
+  transition: opacity 1s ease-out; 
+}
+
+.notification.fade-out {
+  opacity: 0;
+}
+
+
   
   .error-message {
     color: red;
@@ -258,7 +288,7 @@ input::placeholder {
   .footer-buttons button {
     margin-top: 0px;
   }
-  /* Adicionar esse estilo no seu arquivo CSS global */
+
 div {
   font-family: 'Arial', sans-serif;
   padding: 7.5px;
@@ -277,3 +307,200 @@ input, select {
   margin-bottom: 15px;
   width: 100%;
 }
+
+.InputMask {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.InputMask:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+
+input[type="text"], input[type="tel"], input[type="cpf"], input[type="date"], input[type="time"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+input[type="text"]:focus, input[type="tel"]:focus, input[type="cpf"]:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.top-bar {
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  background-color: #002f5d; 
+  color: white; 
+  padding: 5px 20px; 
+  height: 60px; 
+  z-index: 1000; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.top-bar-logo {
+  height: 50px; 
+  margin-right: 10px; 
+  margin-top: -5px;
+  cursor: pointer;
+}
+
+.top-bar-title {
+  font-size: 20px; 
+  font-weight: bold;
+}
+.top-barlogin {
+  margin-right: -20px; 
+  margin-top: -20px
+}
+.top-barlogin button {
+  background-color: transparent; 
+  color: white; 
+  border: 2px solid white; 
+  padding: 8px 40px; 
+  border-radius: 20px; 
+  cursor: pointer;
+  font-size: 16px; 
+  font-weight: normal; 
+  transition: all 0.3s ease; 
+}
+
+.top-barlogin button:hover {
+  background-color: rgb(199, 192, 192); 
+  color: #002f5d; 
+  border-color: #002f5d; 
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; 
+  background-color: rgba(0, 0, 0, 0.5); 
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2000; 
+}
+
+.login-box {
+  background: white;
+  padding: 50px 30px;
+  border-radius: 20px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.login-box h2 {
+  margin-bottom: 20px;
+  color: #002f5d;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #002f5d;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.login-button {
+  background-color: #002f5d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.login-button:hover {
+  background-color: #004080;
+}
+
+.forgot-password {
+  margin-top: -35px;
+  text-align: left;
+}
+
+.forgot-password a {
+  font-size: 12px;
+  color: #002f5d;
+  text-decoration: none;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+}
+
+.close-button {
+  background-color: #002f5d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  width: 100%;
+}
+.agendamento-details {
+  background-color: #fff; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  padding: 30px 40px; 
+  max-width: 500px; 
+  margin: 0 auto; 
+  text-align: left; 
+}
+
+.agendamento-details h3 {
+  font-size: 22px; 
+  margin-bottom: 20px; 
+  color: #333; 
+}
+
+.agendamento-details p {
+  font-size: 16px; 
+  color: #555;
+  margin-bottom: 15px; 
+}
+

@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import "./App.css";
 import imagem from "./assets/Imeq.png";
 import AgendamentoForm from "./AgendamentoForm"; 
+import ConsultarAgendamento from "./ConsultarAgendamento";
+import CancelarAgendamento from "./CancelarAgendamento";
+import Login from "./Login"; // Importa o componente de login
 
 const App = () => {
   const [currentView, setCurrentView] = useState(""); // Estado para controlar a janela ativa
@@ -13,18 +16,31 @@ const App = () => {
 
   // Função para fechar o formulário e voltar à tela inicial
   const closeForm = () => {
-    setCurrentView("");
+    setCurrentView("");  
   };
-
+  const handleLogoClick = () => {
+    setCurrentView("");
+  }
   return (
     <div>
-      <header className="header">
-        <div className="logo">
-          <img src={imagem} alt="Logo IMEQ-PB" />
-          <span>IMEQ-PB</span>
-        </div>
-      </header>
+      <header className="top-bar">
+        <div className="logo-container">
+          <img src={imagem} 
+          alt="Logo IMEQ-PB" 
+          className="top-bar-logo"
+          onClick={handleLogoClick}
+          />
+          <span className="top-bar-title"></span>
 
+        </div>
+        <div className="top-barlogin"> {/* Corrigido de classname para className */}
+          <button onClick={() => openForm("login")}>Login</button>
+      </div>
+      </header>
+      
+         {/* Formulário de Login */}
+       {currentView === "login" && <Login closeForm={closeForm} />}
+      
       {/* Tela Inicial */}
       {currentView === "" && (
         <div className="Quadrado">
@@ -36,26 +52,10 @@ const App = () => {
         </div>
       )}
 
-      {/* Formulário de Agendamento */}
       {currentView === "agendar" && <AgendamentoForm closeForm={closeForm} />}
-
-      {/* Tela de Consulta */}
-      {currentView === "consultar" && (
-        <div className="form-container">
-          <h2>Consultar Agendamento</h2>
-          <p>Aqui você pode consultar seu agendamento.</p>
-          <button onClick={closeForm}>Voltar</button>
-        </div>
-      )}
-
-      {/* Tela de Cancelamento */}
-      {currentView === "cancelar" && (
-        <div className="form-container">
-          <h2>Cancelar Agendamento</h2>
-          <p>Aqui você pode cancelar seu agendamento.</p>
-          <button onClick={closeForm}>Voltar</button>
-        </div>
-      )}
+      {currentView === "consultar" && <ConsultarAgendamento closeForm={closeForm} />}
+      {currentView === "cancelar" && <CancelarAgendamento closeForm={closeForm} />}
+  
     </div>
   );
 };

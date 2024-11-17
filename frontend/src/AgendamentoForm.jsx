@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import InputMask from "react-input-mask";
+import axios from 'axios';
 import "./App.css";
 
 const formatDate = (date) => {
@@ -14,18 +15,18 @@ const getDiasUteis = (inicio, feriados) => {
   let data = new Date(inicio);
 
   while (diasUteis.length < 7) {
-    const diaSemana = data.getDay(); // 0 = domingo, 1 = segunda-feira, ..., 6 = sábado
-    const dataFormatada = formatDate(data); // Formato dd/mm/yyyy
+    const diaSemana = data.getDay();
+    const dataFormatada = formatDate(data);
 
-    const diaMes = `${data.getDate()}/${data.getMonth() + 1}`; // Apenas dia e mês
+    const diaMes = `${data.getDate()}/${data.getMonth() + 1}`;
 
     if (diaSemana !== 0 && diaSemana !== 6 && !feriados.includes(diaMes)) {
       diasUteis.push({
         date: dataFormatada,
-        dayOfWeek: data.toLocaleDateString('pt-BR', { weekday: 'long' }), // Nome do dia da semana
+        dayOfWeek: data.toLocaleDateString('pt-BR', { weekday: 'long' }),
       });
     }
-    data.setDate(data.getDate() + 1); // Avançar um dia
+    data.setDate(data.getDate() + 1); 
   }
   return diasUteis;
 };
@@ -35,20 +36,46 @@ const AgendamentoForm = ({ closeForm }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState({
     cidade: "",
-    tipoServico: "",
     servico: "",
     cpfCnpj: "",
     nome: "",
     telefone: "",
     placa: "",
     renavam: "",
-    dataAtendimento: "", // Adicionado para armazenar a data de atendimento
-    horarioAtendimento: "", // Adicionado para armazenar o horário de atendimento
-    localAtendimento: "", // Adicionado para armazenar o local de atendimento
+    dataAtendimento: "", 
+    horarioAtendimento: "", 
+    localAtendimento: "", 
   });
+  const formDataComDataConvertida = {
+    ...formData,
+    dataAtendimento: converterData(formData.dataAtendimento),
+  };
+  const enviarAgendamento = () => {
+    fetch('http://localhost:3001/agendamentos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formDataComDataConvertida), 
+    })
+      .then((response) => {
+        if (response.ok) {
+          setShowNotification(true); 
+          setTimeout(() => {
+            setShowNotification(false);
+            closeForm(); 
+          }, 3000);
+        } else {
+          throw new Error('Erro ao enviar dados');
+        }
+      })
+      .catch((error) => {
+        console.error('Erro:', error);
+        setErrorMessage('Erro ao confirmar o agendamento.');
+      });
+  };
 
   const [showNotification, setShowNotification] = useState(false);
-  
      const isValidCPF = (cpf) => {
     cpf = cpf.replace(/[^\d]+/g, '');
     if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
@@ -68,26 +95,52 @@ const AgendamentoForm = ({ closeForm }) => {
     const feriados = [
     "01/01","21/04","01/05","07/09","12/10","02/11", "15/11","25/12",
   ];
+  function converterData(data) {
+    const [dia, mes, ano] = data.split('/');
+    return `${ano}-${mes}-${dia}`;
+  }
   useEffect(() => {
     const hoje = new Date();
     const dias = getDiasUteis(hoje, feriados);
     setDiasUteis(dias);
-  }, []); 
-
+  
+    if (formData.dataAtendimento) {
+      console.log(formData.dataAtendimento);
+              const dataConvertida = converterData(formData.dataAtendimento);
+      console.log(dataConvertida);
+      axios.get(`http://localhost:3001/agendamentos/horarios-ocupados/${dataConvertida}`)
+        .then(response => {
+          const horariosOcupados = response.data;
+          console.log(horariosOcupados);
+          const todosHorarios = [
+            "1° Período - 09:00 às 09:30",
+            "2° Período - 09:30 às 10:00",
+            "3° Período - 10:00 às 10:30",
+            "4° Período - 10:30 às 11:00",
+            "5° Período - 11:00 às 11:30",
+            "6° Período - 11:30 às 12:00",
+            "7° Período - 13:00 às 13:30",
+            "8° Período - 13:30 às 14:00"
+          ];
+          const horariosDisponiveis = todosHorarios.filter(horario => !horariosOcupados.includes(horario));
+          setFormData({ ...formData, horariosDisponiveis }); // Atualiza o estado com horários disponíveis
+        })
+        .catch(err => {
+          console.error('Erro ao buscar horários ocupados:', err);
+        });
+    }
+  }, [formData.dataAtendimento]); 
     const validateCpf = (cpf) => {
     const cleanedCpf = cpf.replace(/\D/g, "");
     return cleanedCpf.length === 11;
   };
-  
   const validateNome = (nome) => {
     const regex = /\d/;
     return !regex.test(nome);
   };
-  
   const validateRenavam = (renavam) => {
     return renavam.replace(/\D/g, "").length === 9;
   };
-  
   const nextStep = () => {
     if (step === 1) {
       if (!formData.cidade ||!formData.servico) {
@@ -140,26 +193,25 @@ const AgendamentoForm = ({ closeForm }) => {
     setShowNotification(true); 
     setTimeout(() => {
       setShowNotification(false);
+      console.log(formData);
+      enviarAgendamento();
       closeForm(); 
     }, 3000);
   };
   return (
     <div className="agendamento-container">
       <h1>Agendamento de Serviços</h1>
-
       {step === 1 && (
         <div className="form-step">
           <h2>1. Serviços disponíveis para agendamento</h2>
           <select name="cidade" value={formData.cidade} onChange={handleChange}>
             <option value="">Informe a Cidade</option>
-            <option value="cidade1">João Pessoa</option>
+            <option value="João Pessoa">João Pessoa</option>
           </select>
            <select name="servico" value={formData.servico} onChange={handleChange}>
             <option value="">Serviço selecionado</option>
             <option value="Fiscalização de Taximetro">Fiscalização de Taximetro</option>
           </select>
-
-          {/* Notificação de erro */}
           {errorMessage && <p className="error-message">{errorMessage}</p>}
 
           <button onClick={nextStep}>PRÓXIMO</button>
@@ -175,8 +227,7 @@ const AgendamentoForm = ({ closeForm }) => {
               onChange={handleChange}
               placeholder="___.___.___-__"
               name="cpfCnpj"
-              required
-            >
+              required>
               {(inputProps) => <input {...inputProps} />}
             </InputMask>
             <label>CPF/CNPJ *</label>
@@ -188,8 +239,7 @@ const AgendamentoForm = ({ closeForm }) => {
               value={formData.nome}
               onChange={handleChange}
               placeholder="Nome *"
-              required
-            />
+              required/>
             <label>Nome *</label>
           </div>
           <div className="input-container">
@@ -199,8 +249,7 @@ const AgendamentoForm = ({ closeForm }) => {
               onChange={handleChange}
               placeholder="(__) _____-____"
               name="telefone"
-              required
-            >
+              required>
               {(inputProps) => <input {...inputProps} />}
             </InputMask>
             <label>Telefone</label>
@@ -212,8 +261,7 @@ const AgendamentoForm = ({ closeForm }) => {
               onChange={handleChange}
               placeholder="___-____"
               name="placa"
-              required
-            >
+              required>
               {(inputProps) => <input {...inputProps} />}
             </InputMask>
             <label>Placa</label>
@@ -225,11 +273,9 @@ const AgendamentoForm = ({ closeForm }) => {
               value={formData.renavam}
               onChange={handleChange}
               placeholder="Renavam"
-              required
-            />
+              required/>
             <label>Renavam</label>
           </div>
-          {/* Notificação de erro */}
           {errorMessage && <p className="error-message">{errorMessage}</p>}
           <button onClick={nextStep}>PRÓXIMO</button>
         </div>
@@ -237,26 +283,22 @@ const AgendamentoForm = ({ closeForm }) => {
       {step === 3 && (
         <div className="form-step">
           <h2>3. Local e Data do Atendimento</h2>
-          {/* Local de Atendimento */}
           <div className="input-container">
             <label>Local de Atendimento:</label>
             <select
               name="localAtendimento"
               value={formData.localAtendimento}
-              onChange={handleChange}
-            >
+              onChange={handleChange}>
               <option value=""></option>
               <option value="IMEQ-SEDE">IMEQ SEDE - João Pessoa</option>
             </select>
           </div>
-          {/* Data de Atendimento */}
           <div className="input-container">
             <label>Data de Atendimento:</label>
             <select
               name="dataAtendimento"
               value={formData.dataAtendimento}
-              onChange={handleChange}
-            >
+              onChange={handleChange}>
               <option value=""></option>
               {diasUteis.map((dia) => (
                 <option key={dia.date} value={dia.date}>
@@ -265,44 +307,21 @@ const AgendamentoForm = ({ closeForm }) => {
               ))}
             </select>
           </div>
-          {/* Horários de Atendimento */}
           <div className="input-container">
-            <label>Horário de Atendimento:</label>
+             <label>Horário de Atendimento:</label>
             <select
               name="horarioAtendimento"
               value={formData.horarioAtendimento}
-              onChange={handleChange}
-            >
+              onChange={handleChange}>
               <option value=""></option>
-              <option value="1° Período - 09:00 às 09:30">
-                1° Período - Horário de chegada das 09:00 às 09:30
-              </option>
-              <option value="2° Período - 09:30 às 10:00">
-                2° Período - Horário de chegada das 09:30 às 10:00
-              </option>
-              <option value="3° Período - 10:00 às 10:30">
-                3° Período - Horário de chegada das 10:00 às 10:30
-              </option>
-              <option value="4° Período - 10:30 às 11:00">
-                4° Período - Horário de chegada das 10:30 às 11:00
-              </option>
-              <option value="5° Período - 11:00 às 11:30">
-                5° Período - Horário de chegada das 11:00 às 11:30
-              </option>
-              <option value="6° Período - 11:30 às 12:00">
-                6° Período - Horário de chegada das 11:30 às 12:00
-              </option>
-              <option value="7° Período - 13:00 às 13:30">
-                7° Período - Horário de chegada das 13:00 às 13:30
-              </option>
-              <option value="8° Período - 13:30 às 14:00">
-                8° Período - Horário de chegada das 13:30 às 14:00
-              </option>
+              {formData.horariosDisponiveis && formData.horariosDisponiveis.map((horario, index) => (
+                <option key={index} value={horario}>
+                  {horario}
+                </option>
+              ))}
             </select>
           </div>
-          {/* Notificação de erro */}
           {errorMessage && <p className="error-message">{errorMessage}</p>}
-
           <button onClick={nextStep}>PRÓXIMO</button>
         </div>
       )}
@@ -311,26 +330,22 @@ const AgendamentoForm = ({ closeForm }) => {
     <h2>4. Revise e confirme seu agendamento</h2>
 
     <div className="review-container">
-      {/* Dados Pessoais */}
       <div className="review-column">
         <h3>Dados Pessoais</h3>
         <p><strong>CPF/CNPJ:</strong> {formData.cpfCnpj}</p>
         <p><strong>Nome:</strong> {formData.nome}</p>
         <p><strong>Telefone:</strong> {formData.telefone}</p>
       </div>
-      {/* Serviço Selecionado */}
       <div className="review-column">
         <h3>Serviço Selecionado</h3>
         <p><strong>Serviço:</strong> {formData.servico}</p>
       </div>
     </div>
     <div className="review-container">
-      {/* Local de Atendimento */}
       <div className="review-column">
         <h3>Local de Atendimento</h3>
         <p><strong>Local:</strong> {formData.localAtendimento}</p>
       </div>
-      {/* Data e Hora Agendada */}
       <div className="review-column">
         <h3>Data e Hora Agendada</h3>
         <p><strong>Data:</strong> {formData.dataAtendimento}</p>
@@ -340,7 +355,6 @@ const AgendamentoForm = ({ closeForm }) => {
     </div>
   </div>
 )}
-{/* Notificação */}
 {showNotification && (
         <div className="notification">
           <p>Agendamento confirmado!</p>
