@@ -59,12 +59,11 @@ const AgendamentoForm = ({ closeForm }) => {
       body: JSON.stringify(formDataComDataConvertida), 
     })
       .then((response) => {
-        if (response.ok) {
-          setShowNotification(true); 
+        if (response.ok) { 
           setTimeout(() => {
             setShowNotification(false);
             closeForm(); 
-          }, 3000);
+          }, 1000);
         } else {
           throw new Error('Erro ao enviar dados');
         }
@@ -108,7 +107,7 @@ const AgendamentoForm = ({ closeForm }) => {
       console.log(formData.dataAtendimento);
               const dataConvertida = converterData(formData.dataAtendimento);
       console.log(dataConvertida);
-      axios.get(`http://localhost:3001/agendamentos/horarios-ocupados/${dataConvertida}`)
+      axios.get(`http://localhost:3001/horarios-disponiveis?dataAtendimento=${dataConvertida}`)
         .then(response => {
           const horariosOcupados = response.data;
           console.log(horariosOcupados);
@@ -123,7 +122,7 @@ const AgendamentoForm = ({ closeForm }) => {
             "8° Período - 13:30 às 14:00"
           ];
           const horariosDisponiveis = todosHorarios.filter(horario => !horariosOcupados.includes(horario));
-          setFormData({ ...formData, horariosDisponiveis }); // Atualiza o estado com horários disponíveis
+          setFormData({ ...formData, horariosDisponiveis }); 
         })
         .catch(err => {
           console.error('Erro ao buscar horários ocupados:', err);
@@ -195,8 +194,7 @@ const AgendamentoForm = ({ closeForm }) => {
       setShowNotification(false);
       console.log(formData);
       enviarAgendamento();
-      closeForm(); 
-    }, 3000);
+    }, 1000);
   };
   return (
     <div className="agendamento-container">

@@ -1,4 +1,4 @@
-/* Resetando estilos padrão */
+
 * {
   margin: 0;
   padding: 0;
@@ -15,7 +15,6 @@ body {
   margin: 0;
 }
 
-/* Estilo do quadrado centralizado */
 .Quadrado {
   background-color: #fff;
   padding: 30px;
@@ -39,7 +38,6 @@ body {
   margin-bottom: 20px;
 }
 
-/* Estilo dos botões */
 .Quadrado button {
   display: block;
   width: 100%;
@@ -55,15 +53,15 @@ body {
 }
 
 .Quadrado button:nth-child(3) {
-  color: #28a745; /* Verde para "Agendar Serviço" */
+  color: #28a745; 
 }
 
 .Quadrado button:nth-child(4) {
-  color: #007bff; /* Azul para "Consultar Agendamento" */
+  color: #007bff; 
 }
 
 .Quadrado button:nth-child(5) {
-  color: #dc3545; /* Vermelho para "Cancelar Agendamento" */
+  color: #dc3545; 
 }
 
 .Quadrado button:hover {
@@ -71,7 +69,7 @@ body {
 }
 .header {
   width: 100%;
-  background-color: #1c3d5a; /* Cor de fundo azul-escuro */
+  background-color: #1c3d5a; 
   padding: 10px 20px;
   display: flex;
   align-items: center;
@@ -92,7 +90,7 @@ body {
   font-size: 18px;
   font-weight: bold;
 }
-.modal-overlay {
+.modal-overley {
   position: fixed;
   top: 0;
   left: 0;
@@ -104,7 +102,7 @@ body {
   align-items: center;
 }
 
-.modal-content {
+.modal-contont {
   background: white;
   padding: 20px;
   width: 400px;
@@ -146,14 +144,12 @@ button {
 button:hover {
   background-color: #002244;
 }
-/* Estilos para inputs com labels flutuantes */
-/* Contêiner do campo */
+
 .input-container {
   position: center;
   margin-bottom: 20px;
 }
 
-/* Estilo do campo de entrada */
 .input-container input {
   width: 100%;
   padding: 10px;
@@ -165,10 +161,9 @@ button:hover {
 
 .input-container input:focus {
   outline: none;
-  border-bottom: 2px solid #007BFF; /* Azul para foco */
+  border-bottom: 2px solid #007BFF; 
 }
 
-/* Estilo do rótulo */
 .input-container label {
   position: absolute;
   top: 10px;
@@ -179,7 +174,6 @@ button:hover {
   transition: 0.2s ease all;
 }
 
-/* Estilo ao focar no input ou preencher o campo */
 .input-container input:focus + label,
 .input-container input:not(:placeholder-shown) + label {
   top: -15px;
@@ -203,7 +197,7 @@ button:hover {
 
 .input-container input:focus {
   outline: none;
-  border-bottom: 2px solid #007BFF; /* Cor ao focar no campo */
+  border-bottom: 2px solid #007BFF; 
 }
 
 .input-container label {
@@ -220,18 +214,18 @@ button:hover {
 .input-container input:not(:placeholder-shown) + label {
   top: -20px;
   font-size: 12px;
-  color: #007BFF; /* Cor do label quando o campo tem foco */
+  color: #007BFF; 
 }
 
 input::placeholder {
   color: transparent;
 }
 .form-container {
-  background: white; /* Fundo branco */
-  border-radius: 8px; /* Cantos arredondados */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
-  padding: 50px; /* Espaçamento interno */
-  max-width: 400px; /* Largura máxima */
+  background: white; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  padding: 50px; 
+  max-width: 400px; 
   margin: 0;
 }
 
@@ -272,9 +266,6 @@ input::placeholder {
 .notification.fade-out {
   opacity: 0;
 }
-
-
-  
   .error-message {
     color: red;
   }
@@ -321,7 +312,6 @@ input, select {
   outline: none;
   border-color: #007bff;
 }
-
 
 input[type="text"], input[type="tel"], input[type="cpf"], input[type="date"], input[type="time"] {
   width: 100%;
@@ -470,7 +460,17 @@ input[type="text"]:focus, input[type="tel"]:focus, input[type="cpf"]:focus {
 .forgot-password a:hover {
   text-decoration: underline;
 }
-
+.error-container {
+  background-color: #ffe4e6; 
+  color: #d9534f; 
+  border: 1px solid #f5c6cb; 
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 .close-button {
   background-color: #002f5d;
   color: white;
@@ -503,4 +503,120 @@ input[type="text"]:focus, input[type="tel"]:focus, input[type="cpf"]:focus {
   color: #555;
   margin-bottom: 15px; 
 }
+.agendamentos-table {
+  margin-top: 20px;
+}
 
+.agendamentos-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.agendamentos-table th,
+.agendamentos-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.agendamentos-table th {
+  background-color: #f4f4f4;
+}
+
+button {
+  padding: 10px 20px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%; 
+  max-width: 1800px; 
+  height: 80%; 
+  overflow-y: auto; 
+  position: relative; 
+}
+.modal-content button {
+  position: fixed; /* Fixa o botão no meio da tela */
+  bottom: 5.5%; /* Distância do fundo */
+  left: 50%; /* Centraliza horizontalmente */
+  transform: translate(-50%, -50%); /* Ajusta o ponto de referência para o centro */
+  padding: 8px 16px; /* Tamanho reduzido */
+  font-size: 14px; /* Texto menor */
+  cursor: pointer;
+  border-radius: 16px;
+  width: 1500px; /* Largura fixada (ajuste conforme necessário) */
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.modal-confirma {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: 9999; 
+}
+
+.modal-confirmar {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  width: 250px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15px; 
+  z-index: 10000; 
+  position: relative; 
+}
+
+.modal-confirmar button {
+  padding: 10px 20px; 
+  font-size: 16px; 
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  width: 100%; 
+}
+
+.modal-confirmar button:hover {
+  background-color: #f0f0f0;
+}
+
+.modal-confirmar button:first-child {
+  margin-bottom: 10px;
+}

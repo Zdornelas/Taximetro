@@ -1,4 +1,5 @@
 const express = require('express');
+const router = express.Router();
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -86,23 +87,24 @@ app.get('/agendamentos/:cpfCnpj', (req, res) => {
       }
   
       if (results.length > 0) {
-        res.status(200).json(results[0]); // Retorna o primeiro agendamento encontrado
+        res.status(200).json(results[0]); 
       } else {
         res.status(404).send('Agendamento não encontrado');
       }
     });
   });
-  app.delete('/agendamentos/:cpfCnpj', (req, res) => {
+
+  app.put('/agendamentos/:cpfCnpj', (req, res) => {
     const { cpfCnpj } = req.params;
-  
-    const query = 'DELETE FROM Agendamentos WHERE cpfCnpj = ?';
-  
-    db.query(query, [cpfCnpj], (err, result) => {
+    
+    const query = 'UPDATE Agendamentos SET situacaoAtual = ? WHERE cpfCnpj = ?';
+    
+    db.query(query, ['Cancelado', cpfCnpj], (err, result) => {
       if (err) {
-        console.error('Erro ao cancelar agendamento:', err);
-        return res.status(500).send('Erro ao cancelar agendamento');
+        console.error('Erro ao atualizar agendamento:', err);
+        return res.status(500).send('Erro ao atualizar agendamento');
       }
-  
+    
       if (result.affectedRows > 0) {
         res.status(200).send('Agendamento cancelado com sucesso');
       } else {
@@ -110,13 +112,73 @@ app.get('/agendamentos/:cpfCnpj', (req, res) => {
       }
     });
   });
-  app.get('/horarios-disponiveis', (req, res) => {
-    const { dataAtendimento } = req.query; // A data é passada como parâmetro na query
+
+  app.put('/agendamentos/:dataAtendimento/:horarioAtendimento/:situacaoatual', (req, res) => {
+    const { dataAtendimento, horarioAtendimento, situacaoatual } = req.params;
+  
+    const query = `
+      UPDATE Agendamentos 
+      SET situacaoAtual = 'Concluido' 
+      WHERE dataAtendimento = ? 
+      AND horarioAtendimento = ? 
+      AND situacaoatual = ?
+    `;
+  
+    db.query(query, [dataAtendimento, horarioAtendimento, situacaoatual], (err, result) => {
+      if (err) {
+        console.error('Erro ao atualizar agendamento:', err);
+        return res.status(500).send('Erro ao atualizar agendamento');
+      }
+  
+      if (result.affectedRows > 0) {
+        res.status(200).send('Agendamento atualizado com sucesso');
+      } else {
+        res.status(404).send('Agendamento não encontrado');
+      }
+    });
+  });
+  
+  app.get('/situacao', (req, res) => {
+    const query = `
+      SELECT *
+      FROM Agendamentos 
+      WHERE situacaoatual = "Cancelado" OR situacaoatual = "Concluido"
+    `;
+  
+    db.query(query, (err, result) => {
+      if (err) {
+        console.error('Erro ao buscar agendamentos:', err);
+        return res.status(500).send('Erro ao buscar agendamentos');
+      }
+      res.status(200).json(result);
+    });
+  });
+
+  app.get('/situacao/Pendente', (req, res) => {
+    const query = `
+      SELECT *
+      FROM Agendamentos 
+      WHERE situacaoatual = "Pendente"
+    `;
+  
+    db.query(query, (err, result) => {
+      if (err) {
+        console.error('Erro ao buscar agendamentos:', err);
+        return res.status(500).send('Erro ao buscar agendamentos');
+      }
+      res.status(200).json(result);
+    });
+  });
+
+  app.get('/horarios-disponiveis/', (req, res) => {
+    const { dataAtendimento } = req.query; 
   
     const query = `
       SELECT horarioAtendimento 
       FROM Agendamentos 
       WHERE dataAtendimento = ?
+      AND situacaoatual = "Pendente" 
+      OR situacaoatual = "Concluido"
     `;
   
     db.query(query, [dataAtendimento], (err, results) => {
@@ -130,6 +192,123 @@ app.get('/agendamentos/:cpfCnpj', (req, res) => {
       res.status(200).json(horariosOcupados);
     });
   });
+
+  app.get('/usuario/:cpf', (req, res) => {
+    const { cpf } = req.params;
+    console.log('CPF recebido na rota:', cpf);
+  
+    const query = 'SELECT * FROM Colaboradores WHERE cpf = ?';
+    db.query(query, [cpf], (err, results) => {
+      if (err) {
+        console.error('Erro ao buscar usuário:', err);
+        return res.status(500).send('Erro ao consultar usuário');
+      }
+  
+      console.log('Resultados da consulta:', results);
+      if (results.length > 0) {
+        res.status(200).json(results[0]);
+      } else {
+        res.status(404).send('Usuário não encontrado');
+      }
+    });
+  });
+
+  app.post('/login', (req, res) => {
+
+    const { matricula, senha } = req.body;
+  
+    // Verifica se a matrícula e a senha foram fornecidas
+    if (!matricula || !senha) {
+      return res.status(400).json({ error: 'Matrícula e senha são obrigatórios.' });
+    }
+  
+    // Consulta no banco de dados para verificar se a matrícula existe e a senha corresponde
+    const query = 'SELECT * FROM Colaboradores WHERE matricula = ?';
+  
+    db.query(query, [matricula], (err, results) => {
+      if (err) {
+        console.error('Erro ao consultar a matrícula:', err);
+        return res.status(500).json({ error: 'Erro no servidor.' });
+      }
+  
+      if (results.length === 0) {
+        return res.status(401).json({ error: 'Matrícula ou senha incorreta.' });
+      }
+  
+      const user = results[0];
+  
+      // Verifica se a senha fornecida é a mesma no banco
+      if (user.senha !== senha) {
+        return res.status(401).json({ error: 'Matrícula ou senha incorreta.' });
+      }
+  
+      // Se a matrícula e a senha estiverem corretas
+      res.status(200).json({ message: 'Login bem-sucedido', user });
+    });
+  });
+  // Rota para validar CPF e Matrícula
+app.post('/validar-cpf-matricula', (req, res) => {
+  const { cpf, matricula } = req.body;
+
+  if (!cpf || !matricula) {
+    return res.status(400).json({ error: 'CPF e Matrícula são obrigatórios.' });
+  }
+
+  const query = 'SELECT * FROM Colaboradores WHERE cpf = ? AND matricula = ?';
+
+  db.query(query, [cpf, matricula], (err, results) => {
+    if (err) {
+      console.error('Erro ao consultar CPF e Matrícula:', err);
+      return res.status(500).json({ error: 'Erro no servidor.' });
+    }
+
+    if (results.length === 0) {
+      return res.status(401).json({ error: 'CPF ou Matrícula inválidos.' });
+    }
+
+    // CPF e Matrícula válidos
+    res.status(200).json({ message: 'Validação bem-sucedida.' });
+  });
+});
+app.put('/atualizar-senha', (req, res) => {
+  const { cpf, novaSenha } = req.body;
+
+  if (!cpf || !novaSenha) {
+    return res.status(400).json({ error: 'CPF e nova senha são obrigatórios.' });
+  }
+
+  const query = 'UPDATE Colaboradores SET senha = ? WHERE cpf = ?';
+
+  db.query(query, [novaSenha, cpf], (err, result) => {
+    if (err) {
+      console.error('Erro ao atualizar senha:', err);
+      return res.status(500).json({ error: 'Erro no servidor ao atualizar a senha.' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuário não encontrado.' });
+    }
+
+    res.status(200).json({ message: 'Senha atualizada com sucesso.' });
+  });
+});
+
+app.get('/situacao', (req, res) => {
+  const query = `
+    SELECT *
+    FROM Agendamentos 
+    WHERE situacaoatual = "Pendente"
+  `;
+  
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Erro ao buscar agendamentos:', err);
+      return res.status(500).send('Erro ao buscar agendamentos');
+    }
+    res.status(200).json(result);
+  });
+});
+
   app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
   });

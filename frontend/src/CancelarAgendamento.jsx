@@ -35,7 +35,7 @@ const ConsultarAgendamento = ({ closeForm }) => {
   const handleCancel = async () => {
     try {
       console.log(cpf);
-      await axios.delete(`http://localhost:3001/agendamentos/${cpf}`);
+      await axios.put(`http://localhost:3001/agendamentos/${cpf}`);
       
       setNotification("Agendamento cancelado com sucesso!"); 
       setStep(1); 
@@ -99,8 +99,8 @@ const ConsultarAgendamento = ({ closeForm }) => {
       )}
 
       {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
+        <div className="modal-overley">
+          <div className="modal-contont">
             <h3>Você Deseja Cancelar O Agendamento?</h3>
             <div>
               <button onClick={handleCancel}>Sim</button>

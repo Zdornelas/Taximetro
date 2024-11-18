@@ -64,6 +64,7 @@ const ConsultarAgendamento = ({ closeForm }) => {
           <p><strong>Local:</strong>{agendamento.localAtendimento}</p>
           <p><strong>Data:</strong>{agendamento.dataAtendimento}</p>
           <p><strong>Horario:</strong>{agendamento.horarioAtendimento}</p>
+          <p><strong>Situação Atual:</strong>{agendamento.situacaoatual}</p>
           <button type="button" onClick={handleBack}>
             Voltar
           </button>
