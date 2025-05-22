@@ -60,6 +60,7 @@ docker-compose up --build
 ```
 
 ## Estrutura do Projeto
+```
 Taximetro/
 ├── backend/
 │   ├── Dockerfile
@@ -92,7 +93,7 @@ Taximetro/
 ├── Banco.sql
 ├── docker-compose.yml
 ├── README.md
-
+```
 ## 🧩 Desafios Enfrentados e Soluções
 
 ### 🔧 Integração entre frontend e backend
